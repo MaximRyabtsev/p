@@ -1,9 +1,6 @@
 #include <iostream>
 
 struct String{
-private:
-
-	friend void test();
 
 	int size;
 	int capasity;
@@ -14,7 +11,6 @@ private:
 		std::swap(capasity, oth.capasity);
 		std::swap(str, oth.str);
 	}
-public:
 
 	String():
 		size(0)
@@ -89,33 +85,51 @@ void qs(T* arr, int size){
 		return;
 	}
 	T bigger[size], smaller[size], mid = arr[size/2];
-	int bsize = 0, ssize = 0;
+	int bsize = 0, ssize = 0, rsize = 0;
 	for(int i = 0; i < size; ++i){
-		if(arr[i] < mid || arr[i] == mid){
+		if(arr[i] < mid){
 			smaller[ssize] = arr[i];
 			++ssize;
-			continue;
+		}else if(arr[i] == mid){
+			++rsize;
+		} else{
+			bigger[bsize] = arr[i];
+			++bsize;
 		}
-		bigger[bsize] = arr[i];
-		++bsize;
 	}
 	qs(bigger, bsize); qs(smaller, ssize);
 	for(int i = 0; i < ssize; ++i){
 		arr[i] = smaller[i];
 	}
+	for(int i = 0; i < rsize; ++i){
+		arr[ssize + i] = mid;
+	}
 	for(int i = 0; i < bsize; ++i){
-		arr[i + ssize] = bigger[i];
+		arr[i + ssize + rsize] = bigger[i];
 	}
 }
 
-char bf(){
-
+template <typename T>
+char bf(T* ptr, int size, const T& find, int& pos){
+	if(size == 0)return 0;
+	--size;
+	for(int i = 0, mid = (i+size)/2; i <= size; ++i, mid = (i+size)/2){
+		if(find == ptr[mid]){
+			pos = mid;
+			return 1;
+		}
+		if(find < ptr[mid]){
+			size = mid-1;
+		} else{
+			i = mid+1;
+		}
+	}
+	return 0;
 }
 
 int main(){
 	String d[5] = {"b", "c", "d", "a", "f"};
 	qs(d, 5);
-	for(int i = 0; i < 5; ++i){
-		d[i].p();
-	}
+	int q;
+	std::cout << (bf(d, 5, String("N"), q)?true:false);  
 }
